@@ -25,11 +25,14 @@ export class AppComponent implements OnInit {
 
   TimeInterval: typeof TimeInterval = TimeInterval;
   Language: typeof Language = Language;
+  ChartType: typeof ChartType = ChartType;
   chart: Chart = new Chart();
   chartUtils: ChartUtils = new ChartUtils();
 
-  enumKeys: any[] = [];
+  enumKeys: any[] = ['Daily', 'Weekly', 'Monthly'];
+  chartKeys: any[] = ['Pie', 'Doughnut', 'Bar'];
   timeIntervals: any = TimeInterval;
+  chartTypes: any = ChartType;
 
   obj: any;
   singleDataSet$!: Observable<any>;
@@ -39,13 +42,12 @@ export class AppComponent implements OnInit {
   chartTypeDropdown!: boolean;
 
   selectedTimeInterval: string = 'Daily';
-  selectedChartType: string = 'Pie Chart';
+  selectedChartType: string = 'Pie';
 
   constructor(private apiCallService: ApiCallService) {} 
 
   ngOnInit(): void {
     this.getChart();
-    this.enumKeys = Object.keys(this.TimeInterval);
     this.chart.currentChartType = this.chartUtils.getChartTypePie();
     this.chart.currentChartTypeOptions = this.chartUtils.getChartTypePieOptions();
     this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();

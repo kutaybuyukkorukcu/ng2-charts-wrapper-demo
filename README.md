@@ -1,1 +1,0 @@
-# ng2-charts-wrapper-demo

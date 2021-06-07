@@ -45,7 +45,7 @@
             <span class="absolute top-0 right-0 w-3 h-3 bg-gray-700 transform rotate-45 -mt-1 mr-3"></span>
             <div class="bg-gray-700 rounded w-1/8 fixed z-10 py-1">
               <ul class="list-reset text-xs">
-                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" *ngFor="let item of chartKeys" (click)="selectedChartType = item">
+                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" *ngFor="let item of chartKeys" (click)="onChangeChartType(item)">
                   {{ item }}
                 </li>
               </ul>
@@ -58,14 +58,15 @@
               <option *ngFor="let name of enumKeys" [value]="name"> {{ name }} </option>
             </select>
           </label> -->
-          <button class="text-xs hover:text-gray-300 h-6 focus:outline-none" (click)="timeIntervalDropdown = !timeIntervalDropdown">
-            {{ selectedTimeInterval }} <i class="fa fa-chevron-down"></i>
+          <button class="text-xs hover:text-gray-300 h-6 focus:outline-none flex" (click)="timeIntervalDropdown = !timeIntervalDropdown">
+            <span class="w-12 text-left"> {{ selectedTimeInterval }} </span>
+            <span> <i class="fa fa-chevron-down"></i> </span>
           </button>
           <div class="bg-gray-700 shadow-lg rounded text-sm top-auto right-0 min-w-full w-32 z-30 mt-1 -mr-3" [ngClass]="timeIntervalDropdown == true ? 'contents' : 'hidden'">
             <span class="absolute top-0 right-0 w-3 h-3 bg-gray-700 transform rotate-45 -mt-1 mr-3"></span>
             <div class="bg-gray-700 rounded w-1/8 fixed z-10 py-1">
               <ul class="list-reset text-xs">
-                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" *ngFor="let item of enumKeys" (click)="selectedTimeInterval = item">
+                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" *ngFor="let item of enumKeys" (click)="onChangeTimeInterval(item)">
                   {{ item }}
                 </li>
               </ul>

@@ -58,6 +58,16 @@ export class AppComponent implements OnInit {
     // this.multidatasetBuilder();
   }
 
+  onChangeTimeInterval(item: any) {
+    this.timeIntervalDropdown = !this.timeIntervalDropdown;
+    this.selectedTimeInterval = item;
+  }
+
+  onChangeChartType(item: any) {
+    this.chartTypeDropdown = !this.chartTypeDropdown;
+    this.selectedChartType = item;
+  }
+
   public getChart() {
     this.apiCallService.getChart().subscribe(
       (payload) => {

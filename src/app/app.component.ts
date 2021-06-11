@@ -61,11 +61,23 @@ export class AppComponent implements OnInit {
   onChangeTimeInterval(item: any) {
     this.timeIntervalDropdown = !this.timeIntervalDropdown;
     this.selectedTimeInterval = item;
+
+    if (TimeInterval.DAILY == item) {
+      this.apiCallService
+    }
   }
 
-  onChangeChartType(item: any) {
+  onChangeChartType(item: string) {
     this.chartTypeDropdown = !this.chartTypeDropdown;
     this.selectedChartType = item;
+    this.chart.currentChartType = item.toLowerCase();
+    if (ChartType.BAR == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.BAR);
+    } else if (ChartType.DOUGHNUT == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.DOUGHNUT);
+    } else if (ChartType.PIE == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.PIE);
+    }
   }
 
   public getChart() {

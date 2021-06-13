@@ -62,8 +62,32 @@ export class AppComponent implements OnInit {
     this.timeIntervalDropdown = !this.timeIntervalDropdown;
     this.selectedTimeInterval = item;
 
+    this.getChart(); // with selected time interval
+
+    if (this.selectedChartType == ChartType.BAR 
+      || this.selectedChartType == ChartType.DOUGHNUT
+      || this.selectedChartType == ChartType.PIE
+      || this.selectedChartType == ChartType.DYNAMIC
+    ) {
+      this.chartUtils.fillGivenChartData(this.chart, this.obj);
+
+    } else {
+
+      if (TimeInterval.DAILY == item) {
+        this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.dailyTimeIntervalLabels ,this.chartUtils.getTimeIntervalDailyLabels());
+      } else if (TimeInterval.WEEKLY == item) {
+        this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.weeklyTimeIntervalLabels ,this.chartUtils.getTimeIntervalWeeklyLabels());
+      } else if (TimeInterval.MONTHLY == item) {
+        this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.monthlyTimeIntervalLabels ,this.chartUtils.getTimeIntervalMonthlyLabels());
+      }
+    }
+
     if (TimeInterval.DAILY == item) {
-      this.apiCallService
+      this.getChart();
+
+      this.chartUtils.fillGivenChartData(this.chart, this.obj);
+    } else if (TimeInterval.WEEKLY == item) {
+      this.getChart();
     }
   }
 

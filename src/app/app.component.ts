@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
   constructor(private apiCallService: ApiCallService) {} 
 
   ngOnInit(): void {
-    this.getChart();
+    this.getChart(this.selectedTimeInterval.toLowerCase());
     this.chart.currentChartType = this.chartUtils.getChartTypePie();
     this.chart.currentChartTypeOptions = this.chartUtils.getChartTypePieOptions();
     this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
@@ -58,19 +58,17 @@ export class AppComponent implements OnInit {
     // this.multidatasetBuilder();
   }
 
-  onChangeTimeInterval(item: any) {
+  onChangeTimeInterval(item: string) {
     this.timeIntervalDropdown = !this.timeIntervalDropdown;
     this.selectedTimeInterval = item;
 
-    this.getChart(); // with selected time interval
+    this.getChart(item.toLowerCase()); // with selected time interval
 
     if (this.selectedChartType == ChartType.BAR 
       || this.selectedChartType == ChartType.DOUGHNUT
       || this.selectedChartType == ChartType.PIE
-      || this.selectedChartType == ChartType.DYNAMIC
     ) {
       this.chartUtils.fillGivenChartData(this.chart, this.obj);
-
     } else {
 
       if (TimeInterval.DAILY == item) {
@@ -80,14 +78,6 @@ export class AppComponent implements OnInit {
       } else if (TimeInterval.MONTHLY == item) {
         this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.monthlyTimeIntervalLabels ,this.chartUtils.getTimeIntervalMonthlyLabels());
       }
-    }
-
-    if (TimeInterval.DAILY == item) {
-      this.getChart();
-
-      this.chartUtils.fillGivenChartData(this.chart, this.obj);
-    } else if (TimeInterval.WEEKLY == item) {
-      this.getChart();
     }
   }
 
@@ -101,11 +91,23 @@ export class AppComponent implements OnInit {
       this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.DOUGHNUT);
     } else if (ChartType.PIE == item.toLowerCase()) {
       this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.PIE);
+    } else if (ChartType.BUBBLE == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.BUBBLE);
+    } else if (ChartType.LINE == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.LINE);
+    } else if (ChartType.POLAR == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.POLAR);
+    } else if (ChartType.SCATTER == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.SCATTER);
+    } else if (ChartType.RADAR == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.RADAR);
+    } else if (ChartType.DYNAMIC == item.toLowerCase()) {
+      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.DYNAMIC);
     }
   }
 
-  public getChart() {
-    this.apiCallService.getChart().subscribe(
+  public getChart(timeInterval: string) {
+    this.apiCallService.getChart(timeInterval).subscribe(
       (payload) => {
         this.obj = payload;
         this.chartUtils.fillGivenChartData(this.chart, this.obj);
@@ -132,13 +134,6 @@ export class AppComponent implements OnInit {
     this.ngOnInit();
   }
 }
-
-// export class ChartController {
-//   pieChart: Chart;
-//   doughnutChart: Chart;
-//   barChart: Chart;
-//   lineChart: Chart;
-// }
 
 export enum Language {
   TR = 'TR',

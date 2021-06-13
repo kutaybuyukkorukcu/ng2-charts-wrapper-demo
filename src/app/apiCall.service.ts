@@ -49,10 +49,13 @@ export class ApiCallService {
             )
         );
 
-    public getChart(): Observable<any> {
+    public getChart(timeInterval: string): Observable<any> {
 
+        let url = 'http://localhost:3000/';
 
-        return this.httpClient.get<any>('http://localhost:3000/singledataset');
+        url = url + timeInterval;
+
+        return this.httpClient.get<any>(url);
             // .pipe(
                 // tap(_ => console.log('yo')),
                 // concatMap(res => { return res;}),

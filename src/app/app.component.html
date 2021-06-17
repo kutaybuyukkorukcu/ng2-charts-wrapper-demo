@@ -74,27 +74,13 @@
           </div>
         </div>
       </div>
-      <!-- <div class="chart-wrapper mt-5"> -->
-        <single-dataset-chart [chart]="chart"></single-dataset-chart>
-        <!-- <canvas *ngIf="chart.isChartLoaded == true"
-          baseChart
-          class="chart"
-          [data]="chart.chartData"
-          [labels]="chart.chartLabels"
-          [chartType]="chart.currentChartType"
-          [options]="chart.currentChartTypeOptions"
-          [colors]="chart.chartColors"
-        >
-        </canvas> -->
-        <ngx-spinner
-          bdColor="rgba(51,51,51,0.8)"
-          size="medium"
-          color="#fff"
-          type="ball-scale-multiple"
-        >
-          <p style="font-size: 20px; color: white">Loading...</p>
+      <div class="relative mt-5" [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'">
+        <single-dataset-chart *ngIf="chart.isChartLoaded == true" [chart]="chart"></single-dataset-chart>
+      </div>
+      <div class="relative">
+        <ngx-spinner bdColor = "rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="fire" [fullScreen]="false">
         </ngx-spinner>
-      <!-- </div> -->
+      </div>
   </div>
 </div>
 

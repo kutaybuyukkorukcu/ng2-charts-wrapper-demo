@@ -9,6 +9,7 @@ import { Chart, ChartType, TimeInterval } from 'ng2-charts-wrapper';
 // import { ChartUtils } from 'ng2-charts-wrapper';
 import { ChartUtils } from './chartUtils';
 import { concatMap } from 'rxjs/operators';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
@@ -44,9 +45,10 @@ export class AppComponent implements OnInit {
   selectedTimeInterval: string = 'Daily';
   selectedChartType: string = 'Pie';
 
-  constructor(private apiCallService: ApiCallService) {} 
+  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService) {} 
 
   ngOnInit(): void {
+
     this.getChart(this.selectedTimeInterval.toLowerCase());
     this.chart.currentChartType = this.chartUtils.getChartTypePie();
     this.chart.currentChartTypeOptions = this.chartUtils.getChartTypePieOptions();
@@ -107,27 +109,31 @@ export class AppComponent implements OnInit {
   }
 
   public getChart(timeInterval: string) {
+
+    this.spinner.show();
+    this.chart.isChartLoaded = false;
+
     this.apiCallService.getChart(timeInterval).subscribe(
       (payload) => {
         this.obj = payload;
         this.chartUtils.fillGivenChartData(this.chart, this.obj);
+      },
+      err => {},
+      () => {
+        this.chart.isChartLoaded = true;
+        this.spinner.hide();
       }
     )
-
-    console.log(this.obj);
+    
     return this.singleDataSet;
   }
   
   public singledatasetBuilder() {
     const data = this.apiCallService.getChartDataSet('singledataset');
-
-    console.log(data);
   }
 
   public multidatasetBuilder() {
     const data = this.apiCallService.getChartDataSet('multidataset');
-
-    console.log(data);
   }
 
   public onChangeLanguage() {

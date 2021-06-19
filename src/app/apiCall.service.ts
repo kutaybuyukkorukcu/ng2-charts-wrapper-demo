@@ -49,11 +49,12 @@ export class ApiCallService {
             )
         );
 
-    public getChart(timeInterval: string): Observable<any> {
+    public getChart(timeInterval: string, chartType: string): Observable<any> {
 
         let url = 'http://localhost:3000/';
 
-        url = url + timeInterval;
+        // Using scuffed endpoint because of mock api.
+        url = url + timeInterval + '-' + chartType;
 
         return this.httpClient.get<any>(url);
             // .pipe(
@@ -64,8 +65,6 @@ export class ApiCallService {
                 // concatMap(val => this.examplePromise(val))
                 
             // )
-
-
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

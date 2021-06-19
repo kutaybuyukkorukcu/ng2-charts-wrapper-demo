@@ -74,8 +74,10 @@
           </div>
         </div>
       </div>
-      <div class="relative mt-5" [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'">
-        <single-dataset-chart *ngIf="chart.isChartLoaded == true" [chart]="chart"></single-dataset-chart>
+      <!-- [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'" -->
+      <div class="relative mt-5">
+        <!-- <single-dataset-chart *ngIf="chart.isChartLoaded == true" [chart]="chart"></single-dataset-chart> -->
+        <multi-dataset-chart *ngIf="chart.isChartLoaded == true" [chart]="chart" [translateService]="translateService"></multi-dataset-chart>
       </div>
       <div class="relative">
         <ngx-spinner bdColor = "rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="fire" [fullScreen]="false">

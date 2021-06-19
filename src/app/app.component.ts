@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Ng2ChartsWrapperComponent, Ng2ChartsWrapperService, MultiDataSetChartComponent, SingleDataSetComponent } from 'ng2-charts-wrapper';
-import { Observable } from 'rxjs';
+import { Observable, VirtualTimeScheduler } from 'rxjs';
 import { ApiCallService } from './apiCall.service';
 import { ChartRequest } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
-import { Chart, ChartType, TimeInterval } from 'ng2-charts-wrapper';
+import { Chart, ChartType, TimeInterval, ChartUtils } from 'ng2-charts-wrapper';
 // import { ChartUtils } from 'ng2-charts-wrapper';
-import { ChartUtils } from './chartUtils';
 import { concatMap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -28,10 +28,10 @@ export class AppComponent implements OnInit {
   Language: typeof Language = Language;
   ChartType: typeof ChartType = ChartType;
   chart: Chart = new Chart();
-  chartUtils: ChartUtils = new ChartUtils();
+  chartUtils!: ChartUtils;
 
   enumKeys: any[] = ['Daily', 'Weekly', 'Monthly'];
-  chartKeys: any[] = ['Pie', 'Doughnut', 'Bar'];
+  chartKeys: any[] = ['Pie', 'Doughnut', 'Bar', 'Line'];
   timeIntervals: any = TimeInterval;
   chartTypes: any = ChartType;
 
@@ -43,28 +43,30 @@ export class AppComponent implements OnInit {
   chartTypeDropdown!: boolean;
 
   selectedTimeInterval: string = 'Daily';
-  selectedChartType: string = 'Pie';
+  selectedChartType: string = 'Line';
 
-  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService) {} 
+  translateService!: TranslateService;
+
+  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService, translateService: TranslateService) {
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    this.translateService = translateService;
+  } 
 
   ngOnInit(): void {
-
-    this.getChart(this.selectedTimeInterval.toLowerCase());
-    this.chart.currentChartType = this.chartUtils.getChartTypePie();
-    this.chart.currentChartTypeOptions = this.chartUtils.getChartTypePieOptions();
-    this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
+    this.chartUtils = new ChartUtils(this.translateService);
+    this.getChart(this.selectedTimeInterval.toLowerCase(), 'multidataset');
+    this.chart.currentChartType = this.chartUtils.getChartTypeLine();
+    this.chart.currentChartTypeOptions = this.chartUtils.getChartTypeLineOptions();
+    this.chart.chartColors = this.chartUtils.getMultiDataSetChartColors();
     this.language = 'EN';
     this.timeIntervalDropdown = false;
     this.chartTypeDropdown = false;
-    // this.singledatasetBuilder();
-    // this.multidatasetBuilder();
   }
 
   onChangeTimeInterval(item: string) {
     this.timeIntervalDropdown = !this.timeIntervalDropdown;
     this.selectedTimeInterval = item;
-
-    this.getChart(item.toLowerCase()); // with selected time interval
 
     if (this.selectedChartType == ChartType.BAR 
       || this.selectedChartType == ChartType.DOUGHNUT
@@ -72,12 +74,14 @@ export class AppComponent implements OnInit {
     ) {
       this.chartUtils.fillGivenChartData(this.chart, this.obj);
     } else {
-
-      if (TimeInterval.DAILY == item) {
+      if ('Daily' == item) {
+        this.chart.chartDataSet = [];
         this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.dailyTimeIntervalLabels ,this.chartUtils.getTimeIntervalDailyLabels());
-      } else if (TimeInterval.WEEKLY == item) {
+      } else if ('Weekly' == item) {
+        this.chart.chartDataSet = [];
         this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.weeklyTimeIntervalLabels ,this.chartUtils.getTimeIntervalWeeklyLabels());
-      } else if (TimeInterval.MONTHLY == item) {
+      } else if ('Monthly' == item) {
+        this.chart.chartDataSet = [];
         this.chartUtils.fillGivenChartDataSet(this.chart, this.obj, this.chartUtils.monthlyTimeIntervalLabels ,this.chartUtils.getTimeIntervalMonthlyLabels());
       }
     }
@@ -87,16 +91,43 @@ export class AppComponent implements OnInit {
     this.chartTypeDropdown = !this.chartTypeDropdown;
     this.selectedChartType = item;
     this.chart.currentChartType = item.toLowerCase();
+
     if (ChartType.BAR == item.toLowerCase()) {
-      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.BAR);
+      this.chart.currentChartType = this.chartUtils.getChartTypeBar();
+      this.chart.currentChartTypeOptions = this.chartUtils.getChartTypeBarOptions();
+      this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
+      this.chart.chartLabels = [];
+      this.chart.chartData = [];
+
+      this.chartTypeAndTimeInterval(ChartType.BAR);
+
     } else if (ChartType.DOUGHNUT == item.toLowerCase()) {
-      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.DOUGHNUT);
+      this.chart.currentChartType = this.chartUtils.getChartTypeDoughnut();
+      this.chart.currentChartTypeOptions = this.chartUtils.getChartTypeDoughnutOptions();
+      this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
+      this.chart.chartLabels = [];
+      this.chart.chartData = [];
+
+      this.chartTypeAndTimeInterval(ChartType.DOUGHNUT);
+
     } else if (ChartType.PIE == item.toLowerCase()) {
-      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.PIE);
+      this.chart.currentChartType = this.chartUtils.getChartTypePie();
+      this.chart.currentChartTypeOptions = this.chartUtils.getChartTypePieOptions();
+      this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
+      this.chart.chartLabels = [];
+      this.chart.chartData = [];
+
+      this.chartTypeAndTimeInterval(ChartType.PIE);
+
     } else if (ChartType.BUBBLE == item.toLowerCase()) {
       this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.BUBBLE);
     } else if (ChartType.LINE == item.toLowerCase()) {
-      this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.LINE);
+      this.chart.currentChartType = this.chartUtils.getChartTypeLine();
+      this.chart.currentChartTypeOptions = this.chartUtils.getChartTypeLineOptions();
+      this.chart.chartColors = this.chartUtils.getMultiDataSetChartColors();
+      this.chart.chartDataSet = [];
+
+      this.chartTypeAndTimeInterval(ChartType.LINE);
     } else if (ChartType.POLAR == item.toLowerCase()) {
       this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(ChartType.POLAR);
     } else if (ChartType.SCATTER == item.toLowerCase()) {
@@ -108,15 +139,49 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public getChart(timeInterval: string) {
+  public chartTypeAndTimeInterval(chartType: ChartType) {
+
+    if (this.selectedTimeInterval == 'Daily') {
+      if (chartType == ChartType.BAR || chartType == ChartType.DOUGHNUT || chartType == ChartType.PIE) {
+        this.getChart(this.selectedTimeInterval.toLowerCase(), 'singledataset');
+      } else if (chartType == ChartType.LINE) {
+        this.getChart(this.selectedTimeInterval.toLowerCase(), 'multidataset');
+      }
+    } else if (this.selectedTimeInterval == 'Weekly') {
+      if (chartType == ChartType.BAR || chartType == ChartType.DOUGHNUT || chartType == ChartType.PIE) {
+        this.getChart(this.selectedTimeInterval.toLowerCase(), 'singledataset');
+      } else if (chartType == ChartType.LINE) {
+        this.getChart(this.selectedTimeInterval.toLowerCase(), 'multidataset');
+      }
+    } else if (this.selectedTimeInterval == 'Monthly') {
+      if (chartType == ChartType.BAR || chartType == ChartType.DOUGHNUT || chartType == ChartType.PIE) {
+        this.getChart(this.selectedTimeInterval.toLowerCase(), 'singledataset');
+      } else if (chartType == ChartType.LINE) {
+        this.getChart(this.selectedTimeInterval.toLowerCase(), 'multidataset');
+      }
+    }
+  }
+
+  public getChart(timeInterval: string, chartTypeSet: string) {
 
     this.spinner.show();
     this.chart.isChartLoaded = false;
 
-    this.apiCallService.getChart(timeInterval).subscribe(
+    this.apiCallService.getChart(timeInterval, chartTypeSet).subscribe(
       (payload) => {
         this.obj = payload;
-        this.chartUtils.fillGivenChartData(this.chart, this.obj);
+      
+        if (chartTypeSet == 'singledataset') {
+          this.chartUtils.fillGivenChartData(this.chart, this.obj);
+        } else if (chartTypeSet == 'multidataset') {
+          if (timeInterval == 'daily') {
+            this.chartUtils.fillGivenChartDataSet( this.chart, this.obj, this.chartUtils.dailyTimeIntervalLabels, this.chartUtils.getTimeIntervalDailyLabels(this.translateService));
+          } else if (timeInterval == 'weekly') {
+            this.chartUtils.fillGivenChartDataSet( this.chart, this.obj, this.chartUtils.weeklyTimeIntervalLabels, this.chartUtils.getTimeIntervalWeeklyLabels(this.translateService));
+          } else if (timeInterval == 'monthly') {
+            this.chartUtils.fillGivenChartDataSet( this.chart, this.obj, this.chartUtils.monthlyTimeIntervalLabels, this.chartUtils.getTimeIntervalMonthlyLabels());
+          }
+        }
       },
       err => {},
       () => {
@@ -126,14 +191,6 @@ export class AppComponent implements OnInit {
     )
     
     return this.singleDataSet;
-  }
-  
-  public singledatasetBuilder() {
-    const data = this.apiCallService.getChartDataSet('singledataset');
-  }
-
-  public multidatasetBuilder() {
-    const data = this.apiCallService.getChartDataSet('multidataset');
   }
 
   public onChangeLanguage() {

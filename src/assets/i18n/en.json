@@ -1,3 +1,50 @@
 {
-    
+    "chartType": {
+        "pie": "Pie",
+        "doughnut": "Dougnut",
+        "bar": "Bar",
+        "line": "Line"
+    },
+    "timeInterval": {
+        "header": {
+            "daily": "Daily",
+            "weekly": "Weekly",
+            "Monthly": "Monthly"
+        },
+        "day": {
+            "zero": "0 AM",
+            "one": "1 AM",
+            "two": "2 AM",
+            "three": "3 AM",
+            "four": "4 AM",
+            "five": "5 AM",
+            "six": "6 AM",
+            "seven": "7 AM",
+            "eight": "8 AM",
+            "nine": "9 AM",
+            "ten": "10 AM",
+            "eleven": "11 AM",
+            "twelve": "12 PM",
+            "thirteen": "1 PM",
+            "fourteen": "2 PM",
+            "fifteen": "3 PM",
+            "sixteen": "4 PM",
+            "seventeen": "5 PM",
+            "eighteen": "6 PM",
+            "nineteen": "7 PM",
+            "twenty": "8 PM",
+            "twentyone": "9 PM",
+            "twentytwo": "10 PM",
+            "twentythree": "11 PM"
+        },
+        "week": {
+            "monday": "Monday",
+            "tuesday": "Tuesday",
+            "wednesday": "Wednesday",
+            "thursday": "Thursday",
+            "friday": "Friday",
+            "saturday": "Saturday",
+            "sunday": "Sunday"
+        }
+    }
 }

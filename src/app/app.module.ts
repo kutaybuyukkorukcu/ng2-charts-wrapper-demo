@@ -7,8 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { HttpClient } from '@angular/common/http';
-
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent
@@ -18,7 +18,15 @@ import { HttpClient } from '@angular/common/http';
     Ng2ChartsWrapperModule,
     ChartsModule,
     NgxSpinnerModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: (createTranslateLoader),
+          deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     SingleDataSetComponent
@@ -27,14 +35,6 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppModule { }
 
-// export function httpClientFactory(http: HttpClient) => {
-  
-// }
-
-// TranslateModule.forRoot({
-//   loader: {
-//     provide: TranslateLoader,
-//     // useFactory: HttpLoaderFactory,
-//     deps: [HttpClient]
-//   }
-// })
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
+}

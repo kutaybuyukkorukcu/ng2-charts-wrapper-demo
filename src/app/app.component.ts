@@ -5,12 +5,12 @@ import { ApiCallService } from './apiCall.service';
 import { ChartRequest } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
-import { Chart, ChartType, TimeInterval } from 'ng2-charts-wrapper';
-// import { ChartUtils } from 'ng2-charts-wrapper';
-import { ChartUtils } from './chartUtils';
+import { Chart, ChartType, TimeInterval, SingleOrMultiDataSetWithLabel } from 'ng2-charts-wrapper';
+import { ChartUtils } from 'ng2-charts-wrapper';
 import { concatMap } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import { TranslateService } from '@ngx-translate/core';
+import { SingleDataSet, Label, Color } from 'ng2-charts';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
   Language: typeof Language = Language;
   ChartType: typeof ChartType = ChartType;
   chart: Chart = new Chart();
-  chartUtils: ChartUtils = new ChartUtils();
+  chartUtils!: ChartUtils;
 
   enumKeys: any[] = ['Daily', 'Weekly', 'Monthly'];
   chartKeys: any[] = ['Pie', 'Doughnut', 'Bar'];
@@ -42,17 +42,25 @@ export class AppComponent implements OnInit {
   timeIntervalDropdown!: boolean;
   chartTypeDropdown!: boolean;
 
-  selectedTimeInterval: string = 'Daily';
-  selectedChartType: string = 'Pie';
+  selectedTimeInterval: string = 'Weekly';
+  selectedChartType: string = 'Line';
 
-  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService) {} 
+  translate: TranslateService;
+
+  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService, translateService: TranslateService) {
+    // this.translateService = translateService;
+    translateService.setDefaultLang('en');
+    translateService.use('en');
+    this.translate = translateService;
+  } 
 
   ngOnInit(): void {
-
+    this.chartUtils = new ChartUtils(this.translate);
     this.getChart(this.selectedTimeInterval.toLowerCase());
-    this.chart.currentChartType = this.chartUtils.getChartTypePie();
-    this.chart.currentChartTypeOptions = this.chartUtils.getChartTypePieOptions();
-    this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
+    this.chart.currentChartType = this.chartUtils.getChartTypeLine();
+    this.chart.currentChartTypeOptions = this.chartUtils.getChartTypeLineOptions();
+    // this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
+    this.chart.chartColors = this.chartUtils.getMultiDataSetChartColors();
     this.language = 'EN';
     this.timeIntervalDropdown = false;
     this.chartTypeDropdown = false;
@@ -116,7 +124,8 @@ export class AppComponent implements OnInit {
     this.apiCallService.getChart(timeInterval).subscribe(
       (payload) => {
         this.obj = payload;
-        this.chartUtils.fillGivenChartData(this.chart, this.obj);
+        // this.chartUtils.fillGivenChartData(this.chart, this.obj);
+        this.fillGivenChartDataSet( this.chart, this.obj, this.weeklyTimeIntervalLabels, this.getTimeIntervalWeeklyLabels(this.translate) );
       },
       err => {},
       () => {
@@ -139,6 +148,73 @@ export class AppComponent implements OnInit {
   public onChangeLanguage() {
     this.ngOnInit();
   }
+
+  fillGivenChartDataSet(chart: Chart, multiDataSetChartResponse: MultiDataSetChartResponse[], timeIntervalFields: number[], timeIntervalLabels: Label[]) {
+    let isTimeIntervalPresent = false;
+    let singleDataSet: SingleDataSet = [];
+
+
+    multiDataSetChartResponse.forEach((chartDataSet: MultiDataSetChartResponse) => {
+
+        singleDataSet = [];
+        timeIntervalFields.forEach((timeInterval) => {
+            isTimeIntervalPresent = false;
+            chartDataSet.multiDataSet.forEach((item) => {
+                if (timeInterval == item.data) {
+                    singleDataSet.push(item.timeInterval);
+                    isTimeIntervalPresent = true;
+                }
+            });
+
+            if (isTimeIntervalPresent == false) {
+                singleDataSet.push(0);
+            }
+        });
+
+        chart.chartDataSet.push(new SingleOrMultiDataSetWithLabel(singleDataSet, chartDataSet.label));
+    });
+
+    chart.chartLabels = timeIntervalLabels;
+    chart.isChartLoaded = true;
+  }
+
+  weeklyTimeIntervalLabels: number[] = this.getWeeklyTimeIntervalLabels();
+
+  public getWeeklyTimeIntervalLabels(): number[] {
+      let aDayInMilliseconds = 24 * 60 * 60 * 1000;
+      let datesOfAWeek = [];
+      let currentDate = new Date();
+      let monday = new Date(currentDate.getTime() - (currentDate.getDay() - 1) * aDayInMilliseconds);
+      let sunday = new Date(monday.getTime() + 6 * aDayInMilliseconds);
+      datesOfAWeek.push(monday.getDate());
+      for (let i = 1; i < 6; i++){
+          datesOfAWeek.push(new Date(monday.getTime() + i * aDayInMilliseconds).getDate());
+      }
+      datesOfAWeek.push(sunday.getDate());
+      return datesOfAWeek;
+  }
+
+  public getTimeIntervalWeeklyLabels(translate?: TranslateService): Label[] {
+        
+    let daysOfAWeek: Label[] = [
+        'timeInterval.week.monday',
+        'timeInterval.week.tuesday',
+        'timeInterval.week.wednesday',
+        'timeInterval.week.thursday',
+        'timeInterval.week.friday',
+        'timeInterval.week.saturday',
+        'timeInterval.week.sunday'
+    ];
+    let weeks: Label[] = [];
+
+    daysOfAWeek.forEach(item => {
+        weeks.push(
+            translate != undefined ? translate.instant(item) : this.translate.instant(item)
+        );
+    })
+
+    return weeks;
+}
 }
 
 export enum Language {

@@ -1,3 +1,50 @@
 {
-    
+    "chartType": {
+        "pie": "Pie",
+        "doughnut": "Dougnut",
+        "bar": "Bar",
+        "line": "Line"
+    },
+    "timeInterval": {
+        "header": {
+            "daily": "Günlük",
+            "weekly": "Haftalık",
+            "Monthly": "Aylık"
+        },
+        "day": {
+            "zero": "0:00",
+            "one": "1:00",
+            "two": "2:00",
+            "three": "3:00",
+            "four": "4:00",
+            "five": "5:00",
+            "six": "6:00",
+            "seven": "7:00",
+            "eight": "8:00",
+            "nine": "9:00",
+            "ten": "10:00",
+            "eleven": "11:00",
+            "twelve": "12:00",
+            "thirteen": "13:00",
+            "fourteen": "14:00",
+            "fifteen": "15:00",
+            "sixteen": "16:00",
+            "seventeen": "17:00",
+            "eighteen": "18:00",
+            "nineteen": "19:00",
+            "twenty": "20:00",
+            "twentyone": "21:00",
+            "twentytwo": "22:00",
+            "twentythree": "23:00"
+        },
+        "week": {
+            "monday": "Pazartesi",
+            "tuesday": "Salı",
+            "Wednesday": "Çarşamba",
+            "Thursday": "Perşembe",
+            "Friday": "Cuma",
+            "Saturday": "Cumartesi",
+            "Sunday": "Pazar"
+        }
+    }
 }

@@ -11,9 +11,11 @@
       <div class="flex float-right">
         <div class="sm:block sm:ml-6">
           <div class="flex space-x-4 items-center">            
-            <span (click)="onChangeLanguage(Language.TR)" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer" [ngClass]="preferredLanguage === Language.TR ? 'bg-gray-900' : ''">TR</span>
+            <span (click)="onChangeLanguage(Language.TR)" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 7
+              rounded-md text-sm font-medium cursor-pointer" [ngClass]="preferredLanguage === Language.TR ? 'bg-gray-900' : ''">TR</span>
             <span> | </span>
-            <span (click)="onChangeLanguage(Language.EN)" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium cursor-pointer" [ngClass]="preferredLanguage === Language.EN ? 'bg-gray-900' : ''">EN</span>
+            <span (click)="onChangeLanguage(Language.EN)" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 
+              rounded-md text-sm font-medium cursor-pointer" [ngClass]="preferredLanguage === Language.EN ? 'bg-gray-900' : ''">EN</span>
           </div>
         </div>
       </div>
@@ -31,13 +33,14 @@
             <i class="fa fa-chevron-down text-xs"></i>
           </h3> -->
           <button class="text-sm font-semibold hover:text-gray-300" (click)="chartTypeDropdown = !chartTypeDropdown">
-            {{ selectedChartType | titlecase }} Chart <i class="fa fa-chevron-down text-xs"></i>
+            {{ selectedChartType.value | titlecase }} Chart <i class="fa fa-chevron-down text-xs"></i>
           </button>
           <div class="bg-gray-700 shadow-lg rounded text-sm top-auto right-0 min-w-full w-32 z-30 mt-1 -mr-3" [ngClass]="chartTypeDropdown == true ? 'contents' : 'hidden'">
             <span class="absolute top-0 right-0 w-3 h-3 bg-gray-700 transform rotate-45 -mt-1 mr-3"></span>
             <div class="bg-gray-700 rounded w-1/8 absolute z-10 py-1">
               <ul class="list-reset text-xs">
-                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" *ngFor="let item of chartKeys" (click)="onChangeChartType(item)">
+                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" 
+                  *ngFor="let item of chartKeys" (click)="onChangeChartType(item)">
                   {{ item | titlecase}}
                 </li>
               </ul>
@@ -58,7 +61,8 @@
             <span class="absolute top-0 right-0 w-3 h-3 bg-gray-700 transform rotate-45 -mt-1 mr-3"></span>
             <div class="bg-gray-700 rounded w-1/8 absolute z-10 py-1">
               <ul class="list-reset text-xs">
-                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" *ngFor="let item of enumKeys" (click)="onChangeTimeInterval(item)">
+                <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" 
+                  *ngFor="let item of enumKeys" (click)="onChangeTimeInterval(item)">
                   {{ item | titlecase}}
                 </li>
               </ul>
@@ -68,8 +72,10 @@
       </div>
       <!-- [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'" -->
       <div class="relative mt-5">
-        <single-dataset-chart *ngIf="chart.isChartLoaded == true" [chart]="chart" [translateService]="translateService"></single-dataset-chart>
-        <!-- <multi-dataset-chart *ngIf="chart.isChartLoaded == true" [chart]="chart" [translateService]="translateService"></multi-dataset-chart> -->
+        <single-dataset-chart *ngIf="chart.isChartLoaded == true && isSingleDataSetChartPresent == true" [chart]="chart" 
+          [translateService]="translateService"></single-dataset-chart>
+        <multi-dataset-chart *ngIf="chart.isChartLoaded == true && isMultiDataSetChartPresent == true" [chart]="chart" 
+          [translateService]="translateService"></multi-dataset-chart>
       </div>
       <div class="relative">
         <ngx-spinner bdColor = "rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="fire" [fullScreen]="false">
@@ -77,50 +83,3 @@
       </div>
   </div>
 </div>
-
-<!-- 
-<div class="relative" @click.away="chartData.showDropdown=false">
-  <button class="text-xs hover:text-gray-300 h-6 focus:outline-none" @click="chartData.showDropdown=!chartData.showDropdown">
-      <span x-text="chartData.options[chartData.selectedOption].label"></span><i class="ml-1 mdi mdi-chevron-down"></i>
-  </button>
-  <div class="bg-gray-700 shadow-lg rounded text-sm absolute top-auto right-0 min-w-full w-32 z-30 mt-1 -mr-3" x-show="chartData.showDropdown" style="display: none;" x-transition:enter="transition ease duration-300 transform" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease duration-300 transform" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4">
-      <span class="absolute top-0 right-0 w-3 h-3 bg-gray-700 transform rotate-45 -mt-1 mr-3"></span>
-      <div class="bg-gray-700 rounded w-full relative z-10 py-1">
-          <ul class="list-reset text-xs">
-              <template x-for="(item,index) in chartData.options">
-                  <li class="px-4 py-2 hover:bg-gray-600 hover:text-white transition-colors duration-100 cursor-pointer" :class="{'text-white':index==chartData.selectedOption}" @click="chartData.selectOption(index);chartData.showDropdown=false">
-                      <span x-text="item.label"></span>
-                  </li>
-              </template>
-          </ul>
-      </div>
-  </div>
-</div> 
--->
-
-<!-- <div class="lg:flex lg:items-center lg:justify-between">
-  <div class="flex-1 min-w-0">
-    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-      {{ title }}
-    </h2>
-    <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
-      <label class="block mt-4">
-        <select class="form-select mt-1 block w-full">
-          <option *ngFor="let name of enumKeys" [value]="name"> {{ name }} </option>
-        </select>
-      </label>
-    </div>
-  </div>
-  <div class="mt-5 flex lg:mt-0 lg:ml-4">
-    <canvas *ngIf="chart.isChartLoaded == true"
-      baseChart
-      class="chart"
-      [data]="chart.chartData"
-      [labels]="chart.chartLabels"
-      [chartType]="chart.currentChartType"
-      [options]="chart.currentChartTypeOptions"
-      [colors]="chart.chartColors"
-    >
-    </canvas>
-  </div>
-</div> -->

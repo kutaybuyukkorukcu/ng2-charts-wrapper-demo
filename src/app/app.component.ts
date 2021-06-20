@@ -21,6 +21,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   multiDataSet!: MultiDataSetChartResponse;
 
   isSingleDataSetChartPresent: boolean = true;
+  isMultiDataSetChartPresent: boolean = true;
 
   TimeInterval: typeof TimeInterval = TimeInterval;
   Language: typeof Language = Language;
@@ -40,12 +41,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   chartTypeDropdown: boolean = false;
 
   selectedTimeInterval: TimeInterval = TimeInterval.DAILY;
-  selectedChartType: ChartType = ChartType.PIE;
+  selectedChartType = new BehaviorSubject(ChartType.PIE);
 
   translateService!: TranslateService;
-
-  @ViewChild(SingleDataSetComponent, { static : false}) singleDataSetChart!: ElementRef;
-  @ViewChild(MultiDataSetChartComponent, { static : false}) multiDataSetChart!: ElementRef;
 
   @ViewChildren('onChangeDropdowns', { read: ElementRef }) onChangeDropdowns!: ElementRef[];
 
@@ -64,7 +62,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.chartUtils.getSingleDataSetChartColors() 
     );
 
-    this.getChart(this.selectedTimeInterval, this.selectedChartType);
+    this.getChart(this.selectedTimeInterval, this.selectedChartType.value);
   }
 
   ngAfterViewInit(): void {
@@ -72,6 +70,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     let controlDropdownClicks: Observable<any>[] = this.onChangeDropdowns
       .map((onChangeDropdown: ElementRef) => fromEvent(onChangeDropdown.nativeElement, 'click'));
 
+    this.selectedChartType.subscribe(val => {
+      const dataset = this.isChartTypeSingleOrMultiDataSet(val);
+
+      this.isSingleDataSetChartPresent = dataset == DataSetType.SINGLE_DATASET ? true : false;
+      this.isMultiDataSetChartPresent = dataset == DataSetType.MULTI_DATASET ? true : false;
+    });
   }
 
   onChangeTimeInterval(item: TimeInterval) {
@@ -81,17 +85,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.chart.chartData = [];
     this.chart.chartDataSet = [];
     
-    this.getChart(item, this.selectedChartType);
+    this.getChart(item, this.selectedChartType.value);
   }
 
   onChangeChartType(item: ChartType) {
     this.chartTypeDropdown = !this.chartTypeDropdown;
-    this.selectedChartType = item;
+    this.selectedChartType.next(item);
     
     this.chart.currentChartType = item;
     this.chart.currentChartTypeOptions = this.chartUtils.getCurrentChartTypeOptions(item);
     
-    if (item == ChartType.BAR || ChartType.PIE || ChartType.DOUGHNUT) {
+    if (item == ChartType.BAR || 
+      item == ChartType.PIE || 
+      item == ChartType.DOUGHNUT
+    ) {
       this.chart.chartColors = this.chartUtils.getSingleDataSetChartColors();
     } else {
       this.chart.chartColors = this.chartUtils.getMultiDataSetChartColors();
@@ -135,12 +142,28 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   public onChangeLanguage(language: Language) {
-    this.ngOnInit();
+
+    this.preferredLanguage = language;
+    this.selectedChartType.next(ChartType.PIE);
+    this.selectedTimeInterval = TimeInterval.DAILY;
+    
+    this.chart = new Chart(
+      this.chartUtils.getChartTypePie(),
+      this.chartUtils.getChartTypePieOptions(),
+      this.chartUtils.getSingleDataSetChartColors() 
+    );
+
+    this.getChart(TimeInterval.DAILY, ChartType.PIE);
+    
+    this.translateService.use(language.toLowerCase());
   }
 
   public isChartTypeSingleOrMultiDataSet(chartType?: ChartType): DataSetType {
 
-    if (chartType == ChartType.PIE || ChartType.BAR || ChartType.DOUGHNUT) {
+    if (chartType == ChartType.PIE || 
+      chartType == ChartType.BAR || 
+      chartType == ChartType.DOUGHNUT
+    ) {
       return DataSetType.SINGLE_DATASET;
     }
 

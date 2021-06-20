@@ -40,11 +40,11 @@
         "week": {
             "monday": "Pazartesi",
             "tuesday": "Salı",
-            "Wednesday": "Çarşamba",
-            "Thursday": "Perşembe",
-            "Friday": "Cuma",
-            "Saturday": "Cumartesi",
-            "Sunday": "Pazar"
+            "wednesday": "Çarşamba",
+            "thursday": "Perşembe",
+            "friday": "Cuma",
+            "saturday": "Cumartesi",
+            "sunday": "Pazar"
         }
     }
 }

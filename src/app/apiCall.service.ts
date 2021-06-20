@@ -5,6 +5,8 @@ import { map, catchError, tap, retry, concatMap } from 'rxjs/operators';
 import { ChartRequest, ChartType } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
+import { TimeInterval } from "./chartModel";
+import { DataSetType } from "./app.component";
 
 @Injectable({
     providedIn: 'root'
@@ -49,12 +51,12 @@ export class ApiCallService {
             )
         );
 
-    public getChart(timeInterval: string, chartType: string): Observable<any> {
+    public getChart(timeInterval: TimeInterval, chartType: DataSetType): Observable<any> {
 
         let url = 'http://localhost:3000/';
 
         // Using scuffed endpoint because of mock api.
-        url = url + timeInterval + '-' + chartType;
+        url = url + timeInterval.toLowerCase() + '-' + chartType;
 
         return this.httpClient.get<any>(url);
             // .pipe(

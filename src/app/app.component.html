@@ -21,17 +21,12 @@
       </div>
     </div>
   </div>
-  <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
 </nav>
 
 <div class="min-w-screen min-h-screen bg-gray-900 flex items-center justify-center px-5 py-5">
   <div class="bg-gray-800 text-gray-500 rounded shadow-xl py-5 px-5 xl:w-1/3"> 
-    <!-- lg:w-1/4 -->
       <div class="flex flex-wrap items-center">
         <div class="flex-auto">
-          <!-- <h3 class="text-md font-semibold leading-tight text-gray-100"> Pie Chart
-            <i class="fa fa-chevron-down text-xs"></i>
-          </h3> -->
           <button class="text-sm font-semibold hover:text-gray-300" (click)="chartTypeDropdown = !chartTypeDropdown">
             {{ selectedChartType.value | titlecase }} Chart <i class="fa fa-chevron-down text-xs"></i>
           </button>
@@ -48,11 +43,6 @@
           </div>
         </div>
         <div class="flex-initial float-right">
-          <!-- <label class="block mt-4">
-            <select class="form-select mt-1 block w-full rounded bg-gray-100">
-              <option *ngFor="let name of enumKeys" [value]="name"> {{ name }} </option>
-            </select>
-          </label> -->
           <button class="text-xs hover:text-gray-300 h-6 focus:outline-none flex" (click)="timeIntervalDropdown = !timeIntervalDropdown">
             <span class="w-12 text-left"> {{ selectedTimeInterval | titlecase}} </span>
             <span> <i class="fa fa-chevron-down"></i> </span>
@@ -70,16 +60,15 @@
           </div>
         </div>
       </div>
-      <!-- [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'" -->
       <div class="relative mt-5">
-        <single-dataset-chart *ngIf="chart.isChartLoaded == true && isSingleDataSetChartPresent == true" [chart]="chart" 
-          [translateService]="translateService"></single-dataset-chart>
-        <multi-dataset-chart *ngIf="chart.isChartLoaded == true && isMultiDataSetChartPresent == true" [chart]="chart" 
-          [translateService]="translateService"></multi-dataset-chart>
+        <single-dataset-chart *ngIf="isSingleDataSetChartPresent == true" [chart]="chart" 
+          [translateService]="translateService" [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'"></single-dataset-chart>
+        <multi-dataset-chart *ngIf="isMultiDataSetChartPresent == true" [chart]="chart" 
+          [translateService]="translateService" [ngClass]="chart.isChartLoaded == true ? 'visible': 'invisible'"></multi-dataset-chart>
+          <ngx-spinner bdColor = "rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="ball-scale" [fullScreen]="false">
+          </ngx-spinner>
       </div>
-      <div class="relative">
-        <ngx-spinner bdColor = "rgba(0, 0, 0, 0.4)" size="medium" color="#fff" type="fire" [fullScreen]="false">
-        </ngx-spinner>
-      </div>
+      <!-- <div class="relative"> -->
+      <!-- </div> -->
   </div>
 </div>

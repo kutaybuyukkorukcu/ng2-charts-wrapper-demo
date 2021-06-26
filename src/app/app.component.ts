@@ -1,14 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { Ng2ChartsWrapperComponent, Ng2ChartsWrapperService, MultiDataSetChartComponent, SingleDataSetComponent } from 'ng2-charts-wrapper';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { ApiCallService } from './apiCall.service';
-import { ChartRequest } from 'ng2-charts-wrapper';
-import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
-import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
-import { Chart, ChartType, TimeInterval, ChartUtils } from 'ng2-charts-wrapper';
+import { Chart, ChartType, ChartUtils } from 'ng2-charts-wrapper';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { TranslateService } from '@ngx-translate/core';
-import { TitleCasePipe } from '@angular/common'
-import { BehaviorSubject, Observable, VirtualTimeScheduler, fromEvent, merge } from 'rxjs';
+import { BehaviorSubject, Observable, fromEvent, merge } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,9 +11,6 @@ import { BehaviorSubject, Observable, VirtualTimeScheduler, fromEvent, merge } f
 })
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'ng-ready-charts';
-
-  singleDataSet!: SingleDataSetChartResponse;
-  multiDataSet!: MultiDataSetChartResponse;
 
   isSingleDataSetChartPresent: boolean = true;
   isMultiDataSetChartPresent: boolean = true;
@@ -179,4 +171,15 @@ export enum Language {
 export enum DataSetType {
   SINGLE_DATASET = 'singledataset',
   MULTI_DATASET = 'multidataset'
+}
+
+export enum TimeInterval {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  QUARTER_1 = 'QUARTER_1',
+  QUARTER_2 = 'QUARTER_2',
+  QUARTER_3 = 'QUARTER_3',
+  QUARTER_4 = 'QUARTER_4',
+  CUSTOM = 'CUSTOM'
 }

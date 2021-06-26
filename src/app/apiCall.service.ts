@@ -5,16 +5,14 @@ import { map, catchError, tap, retry, concatMap } from 'rxjs/operators';
 import { ChartRequest, ChartType } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
-import { TimeInterval } from "./chartModel";
-import { DataSetType } from "./app.component";
-
+import { TimeInterval, DataSetType } from "./app.component";
 @Injectable({
     providedIn: 'root'
 })
 export class ApiCallService {
     constructor(private httpClient: HttpClient) {}
 
-    getChartDataSet(dataset: string, chartType?: ChartType): Observable<any> {
+    getChartDataSet(dataset: string): Observable<any> {
 
         let headers: HttpHeaders = new HttpHeaders();
         headers = headers.append('Accept', 'application/json');
@@ -33,15 +31,6 @@ export class ApiCallService {
         )
     }
 
-    // public getChart(): Observable<any> {
-    //     return this.httpClient.get<any>('http://localhost:3000/singledataset')
-    //     .pipe(
-    //         retry(1),
-    //         catchError(this.handleError<any>());
-    //     );
-    //     // pipe(retry(1), catchError(err => { return throwError(err) }));
-    // }
-
     public examplePromise = (val: any) => new Promise(() => {return val;});
 
     public returnValue = (item: any) =>
@@ -59,14 +48,6 @@ export class ApiCallService {
         url = url + timeInterval.toLowerCase() + '-' + chartType;
 
         return this.httpClient.get<any>(url);
-            // .pipe(
-                // tap(_ => console.log('yo')),
-                // concatMap(res => { return res;}),
-                // concatMap(res => this.returnValue(res))
-                // catchError(this.handleError<any>())
-                // concatMap(val => this.examplePromise(val))
-                
-            // )
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

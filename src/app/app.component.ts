@@ -34,8 +34,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   selectedTimeInterval: TimeInterval = TimeInterval.DAILY;
   selectedChartType = new BehaviorSubject(ChartType.PIE);
-
   translateService!: TranslateService;
+  
+  filteredWeeks: any;
 
   @ViewChildren('onChangeDropdowns', { read: ElementRef }) onChangeDropdowns!: ElementRef[];
 
@@ -53,6 +54,28 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.chartUtils.getChartTypePieOptions(),
       this.chartUtils.getSingleDataSetChartColors() 
     );
+
+
+      const currentYear: number = new Date().getFullYear();
+      const currentMonth: number = new Date().getMonth();
+
+      const weeks: any[] = [],
+        firstDate: Date = new Date(currentYear, currentMonth, 1),
+        lastDate: Date = new Date(currentYear, currentMonth + 1, 0),
+        numDays: number = lastDate.getDate();
+    
+      let dayOfWeekCounter = firstDate.getDay();
+    
+      for (let date = 1; date <= numDays; date++) {
+        if (dayOfWeekCounter === 0 || weeks.length === 0) {
+          weeks.push([]);
+        }
+        weeks[weeks.length - 1].push(date);
+        dayOfWeekCounter = (dayOfWeekCounter + 1) % 7;
+      }
+    
+      this.filteredWeeks = weeks
+        .filter((w) => !!w.length);
 
     this.getChart(this.selectedTimeInterval, this.selectedChartType.value);
   }
@@ -127,6 +150,17 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       err => {},
       () => {
+        var chartDataSetMonthly = [];
+        this.chart.chartDataSet.map(dataset => {
+ 
+          this.filteredWeeks.map((item: any[]) => {
+            var x: number = 0;
+            item.map((i) => {
+              x = x + Number(dataset.data[i - 1]);
+            })
+            chartDataSetMonthly.push(x);
+          })
+        });
         this.chart.isChartLoaded = true;
         this.spinner.hide();
       }

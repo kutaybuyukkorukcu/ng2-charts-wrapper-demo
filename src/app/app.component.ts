@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { ApiCallService } from './apiCall.service';
-import { Chart, ChartType, ChartUtils } from 'ng2-charts-wrapper';
+import { Chart, ChartType, ChartUtils, TimeInterval } from 'ng2-charts-wrapper';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, fromEvent, merge } from 'rxjs';
@@ -52,6 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.chart = new Chart(
       this.chartUtils.getChartTypePie(),
       this.chartUtils.getChartTypePieOptions(),
+      TimeInterval.DAILY,
       this.chartUtils.getSingleDataSetChartColors() 
     );
 
@@ -96,6 +97,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   onChangeTimeInterval(item: TimeInterval) {
     this.timeIntervalDropdown = !this.timeIntervalDropdown;
     this.selectedTimeInterval = item;
+    this.chart.currentTimeInterval = item;
 
     this.chart.chartData = [];
     this.chart.chartDataSet = [];
@@ -135,6 +137,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.apiCallService.getChart(timeInterval, datasetType).subscribe(
       (payload) => {
         this.chartResponse = payload;
+
+        this.chart = this.chartUtils.resetChartByChartType(this.chart, chartType);
       
         if (datasetType == DataSetType.SINGLE_DATASET) {
           this.chartUtils.fillGivenChartData(this.chart, this.chartResponse);
@@ -144,23 +148,12 @@ export class AppComponent implements OnInit, AfterViewInit {
           } else if (timeInterval == TimeInterval.WEEKLY) {
             this.chartUtils.fillGivenChartDataSet(this.chart, this.chartResponse, this.chartUtils.weeklyTimeIntervalLabels, this.chartUtils.getTimeIntervalWeeklyLabels(this.translateService));
           } else if (timeInterval == TimeInterval.MONTHLY) {
-            this.chartUtils.fillGivenChartDataSet(this.chart, this.chartResponse, this.chartUtils.monthlyTimeIntervalLabels, this.chartUtils.getTimeIntervalMonthlyLabels());
+            this.chartUtils.fillGivenChartDataSet(this.chart, this.chartResponse, this.chartUtils.monthlyTimeIntervalLabels, this.chartUtils.getTimeIntervalMonthlyLabels(this.translateService));
           }
         }
       },
       err => {},
       () => {
-        var chartDataSetMonthly = [];
-        this.chart.chartDataSet.map(dataset => {
- 
-          this.filteredWeeks.map((item: any[]) => {
-            var x: number = 0;
-            item.map((i) => {
-              x = x + Number(dataset.data[i - 1]);
-            })
-            chartDataSetMonthly.push(x);
-          })
-        });
         this.chart.isChartLoaded = true;
         this.spinner.hide();
       }
@@ -176,6 +169,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.chart = new Chart(
       this.chartUtils.getChartTypePie(),
       this.chartUtils.getChartTypePieOptions(),
+      this.chart.currentTimeInterval,
       this.chartUtils.getSingleDataSetChartColors() 
     );
 
@@ -205,15 +199,4 @@ export enum Language {
 export enum DataSetType {
   SINGLE_DATASET = 'singledataset',
   MULTI_DATASET = 'multidataset'
-}
-
-export enum TimeInterval {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-  QUARTER_1 = 'QUARTER_1',
-  QUARTER_2 = 'QUARTER_2',
-  QUARTER_3 = 'QUARTER_3',
-  QUARTER_4 = 'QUARTER_4',
-  CUSTOM = 'CUSTOM'
 }

@@ -45,6 +45,13 @@
             "friday": "Cuma",
             "saturday": "Cumartesi",
             "sunday": "Pazar"
+        },
+        "month": {
+            "first": "İlk Hafta",
+            "second": "İkinci Hafta",
+            "third": "Üçüncü Hafta",
+            "fourth": "Dördüncü Hafta",
+            "fifth": "Beşinci Hafta"            
         }
     }
 }

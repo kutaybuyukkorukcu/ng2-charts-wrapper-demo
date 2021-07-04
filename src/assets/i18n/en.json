@@ -45,6 +45,13 @@
             "friday": "Friday",
             "saturday": "Saturday",
             "sunday": "Sunday"
+        },
+        "month": {
+            "first": "First Week",
+            "second": "Second Week",
+            "third": "Third Week",
+            "fourth": "Fourth Week",
+            "fifth": "Fifth Week"            
         }
     }
 }

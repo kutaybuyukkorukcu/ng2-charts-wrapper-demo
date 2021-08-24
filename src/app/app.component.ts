@@ -10,7 +10,7 @@ import { BehaviorSubject, Observable, fromEvent, merge } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'ng-ready-charts';
+  title = 'ng-charts';
 
   isSingleDataSetChartPresent: boolean = true;
   isMultiDataSetChartPresent: boolean = true;

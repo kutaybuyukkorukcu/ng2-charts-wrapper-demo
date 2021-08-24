@@ -6,11 +6,17 @@ import { ChartRequest, ChartType, TimeInterval } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
 import { DataSetType } from "./app.component";
+import { environment } from '../environments/environment.prod';
 @Injectable({
     providedIn: 'root'
 })
 export class ApiCallService {
-    constructor(private httpClient: HttpClient) {}
+
+    url!: string;
+
+    constructor(private httpClient: HttpClient) {
+        this.url = environment.API_URL;    
+    }
 
     public examplePromise = (val: any) => new Promise(() => {return val;});
 
@@ -23,12 +29,9 @@ export class ApiCallService {
 
     public getChart(timeInterval: TimeInterval, chartType: DataSetType): Observable<any> {
 
-        let url = 'http://localhost:3000/';
-
-        // Using scuffed endpoint because of mock api.
-        url = url + timeInterval.toLowerCase() + '-' + chartType;
-
-        return this.httpClient.get<any>(url);
+        return this.httpClient.get<any>(
+            this.url + timeInterval.toLowerCase() + '-' + chartType
+        );
     }
 
     private handleError<T>(operation = 'operation', result?: T) {

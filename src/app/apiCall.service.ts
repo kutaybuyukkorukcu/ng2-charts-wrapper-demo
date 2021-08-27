@@ -7,16 +7,17 @@ import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
 import { DataSetType } from "./app.component";
 import { environment } from "src/environments/environment";
+
 @Injectable({
     providedIn: 'root'
 })
 export class ApiCallService {
 
-    url!: string | undefined;
+    url!: any | undefined;
 
     constructor(private httpClient: HttpClient) {
         if (environment.production == true) {
-            this.url = process.env.API_URL;   
+            this.url = process.env.API_URL;
         } else {
             this.url = 'http://localhost:3000/';
         }

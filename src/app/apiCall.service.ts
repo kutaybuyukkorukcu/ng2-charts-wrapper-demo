@@ -6,7 +6,7 @@ import { ChartRequest, ChartType, TimeInterval } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
 import { DataSetType } from "./app.component";
-import { environment } from '../environments/environment.prod';
+import { environment } from '../environments/environment';
 @Injectable({
     providedIn: 'root'
 })
@@ -27,10 +27,10 @@ export class ApiCallService {
             )
         );
 
-    public getChart(timeInterval: TimeInterval, chartType: DataSetType): Observable<any> {
+    public getChart(): Observable<any> {
 
         return this.httpClient.get<any>(
-            this.url + timeInterval.toLowerCase() + '-' + chartType
+            this.url + 'dataset'
         );
     }
 

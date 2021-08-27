@@ -134,9 +134,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     const datasetType = this.isChartTypeSingleOrMultiDataSet(chartType);
 
-    this.apiCallService.getChart(timeInterval, datasetType).subscribe(
+    this.apiCallService.getChart().subscribe(
       (payload) => {
-        this.chartResponse = payload;
+
+        this.chartResponse = this.responseMapper(payload.body, timeInterval, datasetType);
 
         this.chart = this.chartUtils.resetChartByChartType(this.chart, chartType);
       
@@ -158,6 +159,13 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.spinner.hide();
       }
     )
+  }
+
+  public responseMapper(payload: any, timeInterval: TimeInterval, datasetType: DataSetType): any {
+
+    const responseKey = datasetType.toString() + '-' + timeInterval.toString().toLowerCase();
+
+    return payload.body[responseKey];
   }
 
   public onChangeLanguage(language: Language) {

@@ -6,6 +6,7 @@ import { ChartRequest, ChartType, TimeInterval } from 'ng2-charts-wrapper';
 import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
 import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
 import { DataSetType } from "./app.component";
+import { environment } from "src/environments/environment";
 @Injectable({
     providedIn: 'root'
 })
@@ -14,7 +15,11 @@ export class ApiCallService {
     url!: string | undefined;
 
     constructor(private httpClient: HttpClient) {
-        this.url = process.env.API_URL;  
+        if (environment.production == true) {
+            this.url = process.env.API_URL;   
+        } else {
+            this.url = 'http://localhost:3000/';
+        }
     }
 
     public examplePromise = (val: any) => new Promise(() => {return val;});

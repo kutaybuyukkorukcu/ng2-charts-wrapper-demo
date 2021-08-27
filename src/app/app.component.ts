@@ -165,7 +165,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     const responseKey = datasetType.toString() + '-' + timeInterval.toString().toLowerCase();
 
-    return payload.body[responseKey];
+    return payload[responseKey];
   }
 
   public onChangeLanguage(language: Language) {

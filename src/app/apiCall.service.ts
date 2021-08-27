@@ -16,11 +16,7 @@ export class ApiCallService {
     url!: string | undefined;
 
     constructor(private httpClient: HttpClient) {
-        if (environment.production == true) {
-            this.url = `process.env.API_URL`;
-        } else {
-            this.url = 'http://localhost:3000/';
-        }
+        this.url = environment.API_URL;
     }
 
     public examplePromise = (val: any) => new Promise(() => {return val;});

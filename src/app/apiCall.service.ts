@@ -13,11 +13,11 @@ import { environment } from "src/environments/environment";
 })
 export class ApiCallService {
 
-    url!: any | undefined;
+    url!: string | undefined;
 
     constructor(private httpClient: HttpClient) {
         if (environment.production == true) {
-            this.url = process.env.API_URL;
+            this.url = `process.env.API_URL`;
         } else {
             this.url = 'http://localhost:3000/';
         }

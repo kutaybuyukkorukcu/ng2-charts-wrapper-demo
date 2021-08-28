@@ -34,16 +34,23 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   selectedTimeInterval: TimeInterval = TimeInterval.DAILY;
   selectedChartType = new BehaviorSubject(ChartType.PIE);
-  translateService!: TranslateService;
+  // translateService!: TranslateService;
   
   filteredWeeks: any;
 
   @ViewChildren('onChangeDropdowns', { read: ElementRef }) onChangeDropdowns!: ElementRef[];
 
-  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService, translateService: TranslateService) {
-    translateService.setDefaultLang('en');
-    translateService.use('en');
-    this.translateService = translateService;
+  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService, public translateService: TranslateService) {
+    const languageCode = this.getBrowserLanguage(true);
+    if (languageCode == Language.EN.toLowerCase()) {
+      this.preferredLanguage = Language.EN;
+    } else if (languageCode == Language.TR.toLowerCase()) {
+      this.preferredLanguage = Language.TR;
+    }
+
+    translateService.setDefaultLang(languageCode);
+    translateService.use(languageCode);
+    // this.translateService = translateService;
   }
 
   ngOnInit(): void {
@@ -184,6 +191,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.getChart(TimeInterval.DAILY, ChartType.PIE);
     
     this.translateService.use(language.toLowerCase());
+  }
+
+  public getBrowserLanguage(returnOnlyCode: boolean): string {
+    if (navigator.languages != undefined) 
+      return returnOnlyCode == true ? navigator.languages[1].split('-')[0] : navigator.languages[0];
+    return returnOnlyCode == true ? navigator.language.split('-')[0] : navigator.language;
   }
 
   public isChartTypeSingleOrMultiDataSet(chartType?: ChartType): DataSetType {

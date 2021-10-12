@@ -1,37 +1,23 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { from, Observable, throwError, of } from 'rxjs';
-import { map, catchError, tap, retry, concatMap } from 'rxjs/operators';
-import { ChartRequest, ChartType, TimeInterval } from 'ng2-charts-wrapper';
-import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
-import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { TimeInterval } from 'ng2-charts-wrapper';
 import { DataSetType } from "./app.component";
-import { environment } from "src/environments/environment";
-
 @Injectable({
     providedIn: 'root'
 })
 export class ApiCallService {
 
-    url!: string | undefined;
+    url: string = 'assets/chart-data.json';
 
-    constructor(private httpClient: HttpClient) {
-        this.url = environment.API_URL;
-    }
+    constructor(private httpClient: HttpClient) { }
 
-    public examplePromise = (val: any) => new Promise(() => {return val;});
+    public getChart(timeInterval: TimeInterval, dataSetType: DataSetType): Observable<any> {
 
-    public returnValue = (item: any) =>
-        new Promise(res => 
-            setTimeout(() => 
-                res(` ${item} returned value`), 1000
-            )
-        );
-
-    public getChart(): Observable<any> {
-
-        return this.httpClient.get<any>(
-            this.url + 'dataset'
+        const chart = dataSetType + '-' + timeInterval.toLowerCase()
+        return this.httpClient.get<any>(this.url).pipe(
+            map((chartResponse) => (chartResponse[chart]))
         );
     }
 

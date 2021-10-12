@@ -1,0 +1,328 @@
+
+{
+    "singledataset-daily": {
+        "totalDataCount": 15,
+        "singleDataSet": [
+            {
+                "data": 5,
+                "label": "Dataset1"
+            },
+            {
+                "data": 4,
+                "label": "Dataset2"
+            },
+            {
+                "data": 3,
+                "label": "Dataset3"
+            },
+            {
+                "data": 2,
+                "label": "Dataset4"
+            },
+            {
+                "data": 1,
+                "label": "Dataset5"
+            }
+        ]
+    },
+    "multidataset-daily": [
+        {
+            "totalDataCount": 21,
+            "multiDataSet": [
+                {
+                    "data": 0,
+                    "timeInterval": 1
+                },
+                {
+                    "data": 1,
+                    "timeInterval": 3
+                },
+                {
+                    "data": 2,
+                    "timeInterval": 7
+                },
+                {
+                    "data": 3,
+                    "timeInterval": 8
+                },
+                {
+                    "data": 4,
+                    "timeInterval": 13
+                },
+                {
+                    "data": 5,
+                    "timeInterval": 16
+                },
+                {
+                    "data": 6,
+                    "timeInterval": 21
+                }
+            ],
+            "label": "Dataset1"
+        },
+        {
+            "totalDataCount": 43,
+            "multiDataSet": [
+                {
+                    "data": 1,
+                    "timeInterval": 3
+                },
+                {
+                    "data": 2,
+                    "timeInterval": 4
+                },
+                {
+                    "data": 4,
+                    "timeInterval": 9
+                },
+                {
+                    "data": 6,
+                    "timeInterval": 13
+                },
+                {
+                    "data": 8,
+                    "timeInterval": 15
+                },
+                {
+                    "data": 10,
+                    "timeInterval": 21
+                },
+                {
+                    "data": 12,
+                    "timeInterval": 23
+                }
+            ],
+            "label": "Dataset2"
+        }
+    ],
+    "multidataset-weekly": [
+        {
+            "totalDataCount": 21,
+            "multiDataSet": [
+                {
+                    "data": 6,
+                    "timeInterval": 1
+                },
+                {
+                    "data": 5,
+                    "timeInterval": 2
+                },
+                {
+                    "data": 4,
+                    "timeInterval": 3
+                },
+                {
+                    "data": 3,
+                    "timeInterval": 4
+                },
+                {
+                    "data": 2,
+                    "timeInterval": 5
+                },
+                {
+                    "data": 1,
+                    "timeInterval": 6
+                },
+                {
+                    "data": 0,
+                    "timeInterval": 7
+                }
+            ],
+            "label": "Dataset1"
+        },
+        {
+            "totalDataCount": 43,
+            "multiDataSet": [
+                {
+                    "data": 12,
+                    "timeInterval": 1
+                },
+                {
+                    "data": 10,
+                    "timeInterval": 2
+                },
+                {
+                    "data": 8,
+                    "timeInterval": 3
+                },
+                {
+                    "data": 6,
+                    "timeInterval": 4
+                },
+                {
+                    "data": 4,
+                    "timeInterval": 5
+                },
+                {
+                    "data": 2,
+                    "timeInterval": 6
+                },
+                {
+                    "data": 1,
+                    "timeInterval": 7
+                }
+            ],
+            "label": "Dataset2"
+        }
+    ],
+    "singledataset-weekly": {
+        "totalDataCount": 30,
+        "singleDataSet": [
+            {
+                "data": 15,
+                "label": "Dataset1"
+            },
+            {
+                "data": 4,
+                "label": "Dataset2"
+            },
+            {
+                "data": 6,
+                "label": "Dataset3"
+            },
+            {
+                "data": 8,
+                "label": "Dataset4"
+            },
+            {
+                "data": 1,
+                "label": "Dataset5"
+            }
+        ]
+    },
+    "singledataset-monthly": {
+        "totalDataCount": 60,
+        "singleDataSet": [
+            {
+                "data": 13,
+                "label": "Dataset1"
+            },
+            {
+                "data": 4,
+                "label": "Dataset2"
+            },
+            {
+                "data": 9,
+                "label": "Dataset3"
+            },
+            {
+                "data": 18,
+                "label": "Dataset4"
+            },
+            {
+                "data": 3,
+                "label": "Dataset5"
+            }
+        ]
+    },
+    "multidataset-monthly": [
+        {
+            "totalDataCount": 21,
+            "multiDataSet": [
+                {
+                    "data": 0,
+                    "timeInterval": 1
+                },
+                {
+                    "data": 1,
+                    "timeInterval": 3
+                },
+                {
+                    "data": 2,
+                    "timeInterval": 5
+                },
+                {
+                    "data": 3,
+                    "timeInterval": 8
+                },
+                {
+                    "data": 4,
+                    "timeInterval": 13
+                },
+                {
+                    "data": 5,
+                    "timeInterval": 15
+                },
+                {
+                    "data": 6,
+                    "timeInterval": 17
+                },
+                {
+                    "data": 7,
+                    "timeInterval": 20
+                },
+                {
+                    "data": 8,
+                    "timeInterval": 21
+                },
+                {
+                    "data": 9,
+                    "timeInterval": 24
+                },
+                {
+                    "data": 10,
+                    "timeInterval": 26
+                },
+                {
+                    "data": 11,
+                    "timeInterval": 27
+                }
+            ],
+            "label": "Dataset1"
+        },
+        {
+            "totalDataCount": 43,
+            "multiDataSet": [
+                {
+                    "data": 1,
+                    "timeInterval": 1
+                },
+                {
+                    "data": 2,
+                    "timeInterval": 2
+                },
+                {
+                    "data": 4,
+                    "timeInterval": 4
+                },
+                {
+                    "data": 6,
+                    "timeInterval": 8
+                },
+                {
+                    "data": 8,
+                    "timeInterval": 11
+                },
+                {
+                    "data": 10,
+                    "timeInterval": 18
+                },
+                {
+                    "data": 12,
+                    "timeInterval": 19
+                },
+                {
+                    "data": 14,
+                    "timeInterval": 23
+                },
+                {
+                    "data": 16,
+                    "timeInterval": 24
+                },
+                {
+                    "data": 18,
+                    "timeInterval": 25
+                },
+                {
+                    "data": 20,
+                    "timeInterval": 28
+                },
+                {
+                    "data": 22,
+                    "timeInterval": 30
+                }
+            ],
+            "label": "Dataset2"
+        }
+    ]
+}

@@ -1,16 +1,18 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { ApiCallService } from './apiCall.service';
-import { Chart, ChartType, ChartUtils, TimeInterval } from 'ng2-charts-wrapper';
+import { Chart, ChartType, ChartUtils, TimeInterval, ChartRequest } from 'ng2-charts-wrapper';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Observable, fromEvent, merge } from 'rxjs';
+import { BehaviorSubject, Observable, fromEvent } from 'rxjs';
+import { take } from 'rxjs/operators';
+import MultiDataSetChartResponse = ChartRequest.MultiDataSetChartResponse;
+import SingleDataSetChartResponse = ChartRequest.SingleDataSetChartResponse;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'ng-charts';
 
   isSingleDataSetChartPresent: boolean = true;
   isMultiDataSetChartPresent: boolean = true;
@@ -23,8 +25,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   enumKeys: TimeInterval[] = [TimeInterval.DAILY, TimeInterval.WEEKLY, TimeInterval.MONTHLY];
   chartKeys: ChartType[] = [ChartType.PIE, ChartType.DOUGHNUT, ChartType.BAR, ChartType.LINE];
-  
-  chartResponse!: any;
 
   singleDataSet$!: Observable<any>;
 
@@ -34,13 +34,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   selectedTimeInterval: TimeInterval = TimeInterval.DAILY;
   selectedChartType = new BehaviorSubject(ChartType.PIE);
-  // translateService!: TranslateService;
   
   filteredWeeks: any;
 
   @ViewChildren('onChangeDropdowns', { read: ElementRef }) onChangeDropdowns!: ElementRef[];
 
-  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService, public translateService: TranslateService) {
+  constructor(private apiCallService: ApiCallService, private spinner: NgxSpinnerService, public translateService: TranslateService, private cdRef: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+
     const languageCode = this.getBrowserLanguage(true);
     if (languageCode == Language.EN.toLowerCase()) {
       this.preferredLanguage = Language.EN;
@@ -48,12 +50,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.preferredLanguage = Language.TR;
     }
 
-    translateService.setDefaultLang(languageCode);
-    translateService.use(languageCode);
-    // this.translateService = translateService;
-  }
+    this.translateService.setDefaultLang(languageCode);
+    this.translateService.use(languageCode);
 
-  ngOnInit(): void {
     this.chartUtils = new ChartUtils(this.translateService);
     
     this.chart = new Chart(
@@ -85,7 +84,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.filteredWeeks = weeks
         .filter((w) => !!w.length);
 
-    this.getChart(this.selectedTimeInterval, this.selectedChartType.value);
+    this.getChart();
   }
 
   ngAfterViewInit(): void {
@@ -93,11 +92,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     let controlDropdownClicks: Observable<any>[] = this.onChangeDropdowns
       .map((onChangeDropdown: ElementRef) => fromEvent(onChangeDropdown.nativeElement, 'click'));
 
-    this.selectedChartType.subscribe(val => {
+    this.selectedChartType
+      .pipe(take(1))
+      .subscribe(val => {
       const dataset = this.isChartTypeSingleOrMultiDataSet(val);
 
       this.isSingleDataSetChartPresent = dataset == DataSetType.SINGLE_DATASET ? true : false;
       this.isMultiDataSetChartPresent = dataset == DataSetType.MULTI_DATASET ? true : false;
+      this.cdRef.detectChanges();
     });
   }
 
@@ -109,7 +111,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.chart.chartData = [];
     this.chart.chartDataSet = [];
     
-    this.getChart(item, this.selectedChartType.value);
+    this.getChart();
   }
 
   onChangeChartType(item: ChartType) {
@@ -131,32 +133,33 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.chart.chartData = [];
     this.chart.chartDataSet = [];
 
-    this.getChart(this.selectedTimeInterval, item);
+    this.getChart();
   }
 
-  public getChart(timeInterval: TimeInterval, chartType: ChartType) {
+  public getChart() {
 
     this.spinner.show();
     this.chart.isChartLoaded = false;
 
-    const datasetType = this.isChartTypeSingleOrMultiDataSet(chartType);
+    const datasetType: DataSetType = this.isChartTypeSingleOrMultiDataSet(this.selectedChartType.value);
 
-    this.apiCallService.getChart().subscribe(
-      (payload) => {
+    this.apiCallService
+      .getChart(this.selectedTimeInterval, datasetType)
+      .pipe(take(1))
+      .subscribe(
+      (payload: SingleDataSetChartResponse | MultiDataSetChartResponse[]) => {
 
-        this.chartResponse = this.responseMapper(payload.body, timeInterval, datasetType);
-
-        this.chart = this.chartUtils.resetChartByChartType(this.chart, chartType);
+        this.chart = this.chartUtils.resetChartByChartType(this.chart, this.selectedChartType.value);
       
         if (datasetType == DataSetType.SINGLE_DATASET) {
-          this.chartUtils.fillGivenChartData(this.chart, this.chartResponse);
+          this.chartUtils.fillGivenChartData(this.chart, (payload as SingleDataSetChartResponse));
         } else if (datasetType == DataSetType.MULTI_DATASET) {
-          if (timeInterval == TimeInterval.DAILY) {
-            this.chartUtils.fillGivenChartDataSet(this.chart, this.chartResponse, this.chartUtils.dailyTimeIntervalLabels, this.chartUtils.getTimeIntervalDailyLabels(this.translateService));
-          } else if (timeInterval == TimeInterval.WEEKLY) {
-            this.chartUtils.fillGivenChartDataSet(this.chart, this.chartResponse, this.chartUtils.weeklyTimeIntervalLabels, this.chartUtils.getTimeIntervalWeeklyLabels(this.translateService));
-          } else if (timeInterval == TimeInterval.MONTHLY) {
-            this.chartUtils.fillGivenChartDataSet(this.chart, this.chartResponse, this.chartUtils.monthlyTimeIntervalLabels, this.chartUtils.getTimeIntervalMonthlyLabels(this.translateService));
+          if (this.selectedTimeInterval == TimeInterval.DAILY) {
+            this.chartUtils.fillGivenChartDataSet(this.chart, (payload as MultiDataSetChartResponse[]), this.chartUtils.dailyTimeIntervalLabels, this.chartUtils.getTimeIntervalDailyLabels(this.translateService));
+          } else if (this.selectedTimeInterval == TimeInterval.WEEKLY) {
+            this.chartUtils.fillGivenChartDataSet(this.chart, (payload as MultiDataSetChartResponse[]), this.chartUtils.weeklyTimeIntervalLabels, this.chartUtils.getTimeIntervalWeeklyLabels(this.translateService));
+          } else if (this.selectedTimeInterval == TimeInterval.MONTHLY) {
+            this.chartUtils.fillGivenChartDataSet(this.chart, (payload as MultiDataSetChartResponse[]), this.chartUtils.monthlyTimeIntervalLabels, this.chartUtils.getTimeIntervalMonthlyLabels(this.translateService));
           }
         }
       },
@@ -168,18 +171,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     )
   }
 
-  public responseMapper(payload: any, timeInterval: TimeInterval, datasetType: DataSetType): any {
-
-    const responseKey = datasetType.toString() + '-' + timeInterval.toString().toLowerCase();
-
-    return payload[responseKey];
-  }
-
   public onChangeLanguage(language: Language) {
 
     this.preferredLanguage = language;
     this.selectedChartType.next(ChartType.PIE);
-    this.selectedTimeInterval = TimeInterval.DAILY;
     
     this.chart = new Chart(
       this.chartUtils.getChartTypePie(),
@@ -188,7 +183,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.chartUtils.getSingleDataSetChartColors() 
     );
 
-    this.getChart(TimeInterval.DAILY, ChartType.PIE);
+    this.getChart();
     
     this.translateService.use(language.toLowerCase());
   }

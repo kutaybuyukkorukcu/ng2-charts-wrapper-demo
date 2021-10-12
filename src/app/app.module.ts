@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Ng2ChartsWrapperModule, SingleDataSetComponent } from 'ng2-charts-wrapper';
+import { MultiDataSetChartComponent, Ng2ChartsWrapperModule, SingleDataSetComponent } from 'ng2-charts-wrapper';
 import { ChartsModule } from 'ng2-charts';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,7 +29,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     })
   ],
   providers: [
-    SingleDataSetComponent
+    SingleDataSetComponent,
+    MultiDataSetChartComponent
   ],
   bootstrap: [AppComponent]
 })
